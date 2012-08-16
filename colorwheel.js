@@ -1,10 +1,11 @@
-var colorWheel = function(basecolors, delt) {
+var colorWheel = function(basecolors, delt, increment) {
 	var BASECOLOR_R = basecolors[0] || 0;
 	var BASECOLOR_G = basecolors[1] || 0;
 	var BASECOLOR_B = basecolors[2] || 0;
 	var delta_r = delt || 10;
 	var delta_g = delt || 10;
 	var delta_b = delt || 10;
+	var inc = increment || 10;
 	var cycleDef = ['G', 'R', 'B', 'R'];
 //	var cycleDef = ['B'];
 	var cycleCount = 0;
@@ -93,9 +94,9 @@ var colorWheel = function(basecolors, delt) {
 			}
 		}
 	};
-	var spinner_r = slider(10);
-	var spinner_g = slider(10);
-	var spinner_b = slider(10);
+	var spinner_r = slider(inc);
+	var spinner_g = slider(inc);
+	var spinner_b = slider(inc);
 	return {
 		baseColor : function () {
 			return BASECOLOR;
@@ -109,6 +110,18 @@ var colorWheel = function(basecolors, delt) {
 		b : function () {
 			return BASECOLOR[2];
 		},
+		toString : function () {
+			return "rgb(" + BASECOLOR[0] + "," + BASECOLOR[1] + "," + BASECOLOR[2] + ")";
+		},
+		toHex : function () {
+			var r = this.r().toString(16);
+			var g = this.g().toString(16);
+			var b = this.b().toString(16);
+			if (r.length < 2) r = "0" + r;
+			if (g.length < 2) g = "0" + g;
+			if (b.length < 2) b = "0" + b;
+			return "#" + r + g + b;
+		},
 		setBase : function (array) {
 			BASECOLOR_R = array[0];
 			BASECOLOR_G = array[1];
@@ -120,8 +133,9 @@ var colorWheel = function(basecolors, delt) {
 		},
 		setCycle : function (array) {
 			cycleDef = array;
+			console.log(cycleDef);
 			return this;
-		}
+		},
 		slideR : function (inc) {
 			BASECOLOR[0] = bounded(BASECOLOR_R + Math.floor(delta_r * inc));	
 			return BASECOLOR;
