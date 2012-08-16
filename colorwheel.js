@@ -118,6 +118,10 @@ var colorWheel = function(basecolors, delt) {
 			}
 			return this;
 		},
+		setCycle : function (array) {
+			cycleDef = array;
+			return this;
+		}
 		slideR : function (inc) {
 			BASECOLOR[0] = bounded(BASECOLOR_R + Math.floor(delta_r * inc));	
 			return BASECOLOR;
