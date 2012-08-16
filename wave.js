@@ -6,9 +6,9 @@ var colorWheel = function(basecolors, delt) {
 	var delta_g = delt || 10;
 	var delta_b = delt || 10;
 	var cycleDef = ['G', 'R', 'B', 'R'];
-	//var cycleDef = ['B'];
+//	var cycleDef = ['B'];
 	var cycleCount = 0;
-	var next = true;
+	var stepFinished = false;
 
 	var BASECOLOR = [BASECOLOR_R, BASECOLOR_G, BASECOLOR_B];
 
@@ -28,9 +28,8 @@ var colorWheel = function(basecolors, delt) {
 		var finished = false;
 		return {
 			next : function() {
-				var factor = (Math.PI * 2 * counter) / increment;
-				current = Math.cos(factor);
-//				console.log(current + " counter: " + counter + " increment:" + increment);
+				var factor = (Math.PI * counter) / (increment * 2);
+				current = Math.sin(factor);
 				counter = ((counter + 1) % increment);
 				if (counter === 0) {
 					finished = true;
@@ -39,18 +38,64 @@ var colorWheel = function(basecolors, delt) {
 			},
 			finished : function () {
 				return finished;
-			},
-			current : function () {
-				return current;
 			}
 		}
 	};
-	var spinner = spin(10);
+	var spinc = function(inc) {
+		var increment = inc;
+		var counter = 1;
+		var current =0;
+		var finished = false;
+		return {
+			next: function () {
+				var factor = (Math.PI * counter) / (increment * 2);
+				current = Math.cos(factor);
+				counter = ((counter + 1) % increment);
+				if (counter === 0) { finished = true; };
+				return current;
+			},
+			finished: function () {
+				return finished;
+			}
+		}
+	}
 	var bounded = function (colorvalue) {
 		if (colorvalue < 0) return 0;
 		if (colorvalue > 255) return 255;
 		return colorvalue;
 	};
+	var slider = function (inc) {
+		var up = true;
+		var spinup = spin(inc);
+		var spindown = spinc(inc);
+		return {
+			nextInc: function () {
+				var nextval;
+				if (up) {
+					nextval = spinup.next();
+					if (spinup.finished()) {
+						spinup = spin(inc);
+						stepFinished = true;
+						up = !up;
+					}
+				} else {
+					nextval = spindown.next();
+					if (spindown.finished()){
+						spindown = spinc(inc);
+						stepFinished = true;
+						up = !up;
+					}
+				}
+				return nextval;
+			},
+			toggle : function() {
+				up = !up;
+			}
+		}
+	};
+	var spinner_r = slider(10);
+	var spinner_g = slider(10);
+	var spinner_b = slider(10);
 	return {
 		baseColor : function () {
 			return BASECOLOR;
@@ -86,39 +131,47 @@ var colorWheel = function(basecolors, delt) {
 			return BASECOLOR;
 		},
 		cycle : function () {
-			if (spinner.finished()) {
+			if (stepFinished) {
+				stepFinished = false;
 				cycleCount = (cycleCount + 1) % cycleDef.length;
-				spinner = spin(10);
 			}
 			switch (cycleDef[cycleCount]) {
-				case 'R': this.slideR(spinner.next()); break;
-				case 'G': this.slideG(spinner.next()); break;
-				case 'B': this.slideB(spinner.next()); break;
+				case 'R': this.slideR(spinner_r.nextInc()); break;
+				case 'G': this.slideG(spinner_g.nextInc()); break;
+				case 'B': this.slideB(spinner_b.nextInc()); break;
 			}
+		},
+		cycleConcurrent: function () {
+			this.slideR(spinner_r.nextInc());
+			this.slideG(spinner_g.nextInc());
+			this.slideB(spinner_b.nextInc());
 		}
 	}
 };
 
-var basecolors = [50, 50, 200];
+var basecolors = [30, 150, 200];
 
 function startAnim(e) {
 	e.target.style.opacity = 100;
-	// start color swirling -- cycle through blues
-	//var parse = /(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3})/;
-	//var colorArray = parse.exec(color);
-	
 	var colors = colorWheel(basecolors, 50);	
-	e.target.interval = setInterval(function () { 
-			colors.cycle();
-			e.target.style.backgroundColor = "rgb(" + colors.r() +", "+ colors.g() + ", " + colors.b() + ")";
-			//console.log(e.target.style.backgroundColor);
-		}, 100);
+	if (!e.target.interval) {
+		e.target.interval = setInterval(function () { 
+				colors.cycle();
+				e.target.style.backgroundColor = "rgb(" + colors.r() +", "+ colors.g() + ", " + colors.b() + ")";
+				//console.log(e.target.style.backgroundColor);
+			}, 100);
+		} else {
+			clearInterval(e.target.interval);
+			e.target.interval = undefined;
+		}
 }
 
 function endAnim(e) {
 	// end color swirling (use new prop on elem?)
-	clearInterval(e.target.interval);
-	e.target.style.backgroundColor = "#eee";
+	//if (e.target.interval) {
+	//	clearInterval(e.target.interval);
+	//}
+	e.target.style.opacity = 0.75;
 }
 
 function load() {
