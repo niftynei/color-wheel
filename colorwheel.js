@@ -1,9 +1,3 @@
-if (typeof Object.create !== 'function') {
-	function F() {}
-	F.prototype = this;
-	return new F();
-}
-
 var colorWheel = function(basecolors, delt, increment) {
 	var BASECOLOR_R = basecolors[0] || 0;
 	var BASECOLOR_G = basecolors[1] || 0;
@@ -45,6 +39,7 @@ var colorWheel = function(basecolors, delt, increment) {
 			} else {
 				counter += -1;
 			}
+			console.log(counter);
 		};
 		return {
 			up : function () {
@@ -173,8 +168,8 @@ var colorWheel = function(basecolors, delt, increment) {
 		step : function () {
 			switch (cycleDef[cycleCount]) {
 				case 'R': this.slideR(spinner_r.nextStep()); break;
-				case 'G': this.slideG(spinner_r.nextStep()); break;
-				case 'B': this.slideB(spinner_r.nextStep()); break;
+				case 'G': this.slideG(spinner_g.nextStep()); break;
+				case 'B': this.slideB(spinner_b.nextStep()); break;
 			}
 			
 		},
