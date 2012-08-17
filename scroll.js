@@ -1,5 +1,3 @@
-// TODO: spin colors by direction (left, down || right, up)
-
 var colors = [0, 0, 0];
 var colorSteps = [['G'],['R'],['B']];
 var colorStep = 0;
