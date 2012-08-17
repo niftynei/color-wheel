@@ -1,3 +1,9 @@
+if (typeof Object.create !== 'function') {
+	function F() {}
+	F.prototype = this;
+	return new F();
+}
+
 var colorWheel = function(basecolors, delt, increment) {
 	var BASECOLOR_R = basecolors[0] || 0;
 	var BASECOLOR_G = basecolors[1] || 0;
@@ -23,43 +29,49 @@ var colorWheel = function(basecolors, delt, increment) {
 		BASECOLOR[2] = b;
 	};
 	var spin = function(inc) {
-	  var increment = inc;	
-		var counter = 1;
-		var current = 0;
-		var finished = false;
-		return {
-			next : function() {
-				var factor = (Math.PI * counter) / (increment * 2);
-				current = Math.sin(factor);
-				counter = ((counter + 1) % increment);
-				if (counter === 0) {
-					finished = true;
-				}
-				return current;
-			},
-			finished : function () {
-				return finished;
-			}
-		}
-	};
-	var spinc = function(inc) {
 		var increment = inc;
 		var counter = 1;
-		var current =0;
+		var up = true;
 		var finished = false;
+		var checkCounter = function () {
+			if (counter <= 0 || counter > increment) {
+				finished = true;
+				counter = counter > increment ? increment : 0;
+			}
+		};
+		var moveCounter = function () {
+			if (up) {
+				counter += 1;
+			} else {
+				counter += -1;
+			}
+		};
 		return {
-			next: function () {
+			up : function () {
 				var factor = (Math.PI * counter) / (increment * 2);
-				current = Math.cos(factor);
-				counter = ((counter + 1) % increment);
-				if (counter === 0) { finished = true; };
-				return current;
+				moveCounter();
+				checkCounter();
+				return Math.sin(factor);
+			},
+			down: function () {
+				var factor = (Math.PI * counter) / (increment * 2);
+				moveCounter();
+				checkCounter();
+				return Math.cos(factor);
 			},
 			finished: function () {
 				return finished;
+			},
+			reset : function () {
+				finished = !finished;
+				counter = 1;
+				console.log(counter + " " + finished);
+			},
+			toggleDirection : function () {
+				up = !up;
 			}
 		}
-	}
+	};
 	var bounded = function (colorvalue) {
 		if (colorvalue < 0) return 0;
 		if (colorvalue > 255) return 255;
@@ -67,31 +79,30 @@ var colorWheel = function(basecolors, delt, increment) {
 	};
 	var slider = function (inc) {
 		var up = true;
-		var spinup = spin(inc);
-		var spindown = spinc(inc);
+		var spinner = spin(inc);
+		var getValue = function () {
+			return nextval = up ? spinner.up() : spinner.down();
+		}
 		return {
-			nextInc: function () {
-				var nextval;
-				if (up) {
-					nextval = spinup.next();
-					if (spinup.finished()) {
-						spinup = spin(inc);
-						stepFinished = true;
-						up = !up;
-					}
-				} else {
-					nextval = spindown.next();
-					if (spindown.finished()){
-						spindown = spinc(inc);
-						stepFinished = true;
-						up = !up;
-					}
+			nextLoop: function () {
+				var nextval = getValue();
+				if (spinner.finished()) {
+					spinner.reset();
+					stepFinished = true;
+					up = !up;
 				}
 				return nextval;
 			},
+			nextStep: function () {
+				return getValue();
+			},
 			toggle : function() {
 				up = !up;
+			},
+			toggleSpinner : function () {
+				spinner.toggleDirection();
 			}
+
 		}
 	};
 	var spinner_r = slider(inc);
@@ -154,15 +165,30 @@ var colorWheel = function(basecolors, delt, increment) {
 				cycleCount = (cycleCount + 1) % cycleDef.length;
 			}
 			switch (cycleDef[cycleCount]) {
-				case 'R': this.slideR(spinner_r.nextInc()); break;
-				case 'G': this.slideG(spinner_g.nextInc()); break;
-				case 'B': this.slideB(spinner_b.nextInc()); break;
+				case 'R': this.slideR(spinner_r.nextLoop()); break;
+				case 'G': this.slideG(spinner_g.nextLoop()); break;
+				case 'B': this.slideB(spinner_b.nextLoop()); break;
+			}
+		},
+		step : function () {
+			switch (cycleDef[cycleCount]) {
+				case 'R': this.slideR(spinner_r.nextStep()); break;
+				case 'G': this.slideG(spinner_r.nextStep()); break;
+				case 'B': this.slideB(spinner_r.nextStep()); break;
+			}
+			
+		},
+		toggleStep : function () {
+			switch (cycleDef[cycleCount]) {
+				case 'R': spinner_r.toggleSpinner(); break;
+				case 'G': spinner_g.toggleSpinner(); break;
+				case 'B': spinner_b.toggleSpinner(); break;
 			}
 		},
 		cycleConcurrent: function () {
-			this.slideR(spinner_r.nextInc());
-			this.slideG(spinner_g.nextInc());
-			this.slideB(spinner_b.nextInc());
+			this.slideR(spinner_r.nextLoop());
+			this.slideG(spinner_g.nextLoop());
+			this.slideB(spinner_b.nextLoop());
 		}
 	}
 };
