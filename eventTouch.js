@@ -35,7 +35,6 @@ txtbox.addEventListener('focus', handler, false);
 //.addEventListener('mouseenter', handler, false);
 //.addEventListener('mouseleave', handler, false);
 //.addEventListener('mousemove', handler, false);
-//.addEventListener('mouseout', handler, false);
 //.addEventListener('mouseup', handler, false);
 //.addEventListener('mousewheel', handler, false);
 //.addEventListener('paste', handler, false);
