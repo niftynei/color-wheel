@@ -25,7 +25,7 @@ var colorWheel = function(basecolors, delt, increment) {
 	var spin = function(inc) {
 		var increment = inc;
 		var counter = 1;
-		var up = true;
+		var up = 1;
 		var finished = false;
 		var checkCounter = function () {
 			if (counter <= 0 || counter > increment) {
@@ -34,12 +34,11 @@ var colorWheel = function(basecolors, delt, increment) {
 			}
 		};
 		var moveCounter = function () {
-			if (up) {
+			if (up == 1) {
 				counter += 1;
 			} else {
 				counter += -1;
 			}
-			console.log(counter);
 		};
 		return {
 			up : function () {
@@ -63,7 +62,10 @@ var colorWheel = function(basecolors, delt, increment) {
 				console.log(counter + " " + finished);
 			},
 			toggleDirection : function () {
-				up = !up;
+				up = up * -1;
+			},
+			getDirection : function () {
+				return up;
 			}
 		}
 	};
@@ -96,8 +98,10 @@ var colorWheel = function(basecolors, delt, increment) {
 			},
 			toggleSpinner : function () {
 				spinner.toggleDirection();
+			},
+			getSpinnerDirection : function () {
+				return spinner.getDirection();
 			}
-
 		}
 	};
 	var spinner_r = slider(inc);
@@ -139,7 +143,6 @@ var colorWheel = function(basecolors, delt, increment) {
 		},
 		setCycle : function (array) {
 			cycleDef = array;
-			console.log(cycleDef);
 			return this;
 		},
 		slideR : function (inc) {
@@ -184,6 +187,15 @@ var colorWheel = function(basecolors, delt, increment) {
 			this.slideR(spinner_r.nextLoop());
 			this.slideG(spinner_g.nextLoop());
 			this.slideB(spinner_b.nextLoop());
+		},
+		getCurrentSpinnerDirection : function () {
+			var direction;
+			switch (cycleDef[cycleCount]) {
+				case 'R': direction = spinner_r.getSpinnerDirection(); break;
+				case 'G': direction = spinner_g.getSpinnerDirection(); break;
+				case 'B': direction = spinner_b.getSpinnerDirection(); break;
+			}
+			return direction;
 		}
 	}
 };
