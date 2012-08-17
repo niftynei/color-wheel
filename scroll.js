@@ -1,5 +1,5 @@
 var colors = [0, 0, 0];
-var colorSteps = [['G'],['R'],['B']];
+var colorSteps = [['G'],['B'],['R']];
 var colorStep = 0;
 var colors = colorWheel(colors, 255, 50);
 colors.setCycle(colorSteps[2]);
