@@ -1,5 +1,4 @@
-// TODO: spin colors by direction (left, up || right, down)
-//	 will require a rewrite of colorwheel
+// TODO: spin colors by direction (left, down || right, up)
 
 var colors = [0, 0, 0];
 var colorSteps = [['G'],['R'],['B']];
@@ -7,15 +6,19 @@ var colorStep = 0;
 var colors = colorWheel(colors, 255, 50);
 colors.setCycle(colorSteps[2]);
 
-var directionChanged = function () {
- 	
- return false;
+var directionChanged = function (e) {
+	var delta = e.detail ? e.detail : e.wheelDelta; 
+	var sign = delta && delta / Math.abs(delta);
+	if (colors.getCurrentSpinnerDirection() * sign == -1) {
+		return true;
+	}
+	return false;
 }
 
 var scroll = function (e) {
 	e.preventDefault();
 	if (e.target.id === "scroll") {
-		if (directionChanged()) {
+		if (directionChanged(e)) {
 			colors.toggleStep();
 		};
 		colors.step();
