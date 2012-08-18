@@ -1,5 +1,5 @@
-var basecolor = [0, 30, 200];
-var targetcolor = [100, 0, 100];
+var basecolor = [255, 136, 174];
+var targetcolor = [255, 136, 0];
 
 function getColors (string) {
 	var parse = /\D*(\d+) *, *(\d+) *, *(\d+)/;
@@ -17,7 +17,7 @@ function startAnim(e) {
 	e.target.interval = setInterval(function () { 
 			colors.stepConcurrent();
 			e.target.style.backgroundColor = colors.toString();
-		}, 75);
+		}, 50);
 }
 
 function endAnim(e) {
@@ -31,7 +31,11 @@ function endAnim(e) {
 	e.target.interval = setInterval(function () {
 		colors.stepConcurrent();
 		e.target.style.backgroundColor = colors.toString();
-	}, 150);
+	}, 200);
+}
+
+function write(e) {
+	e.target.value = "blur";
 }
 
 function load() {
@@ -41,6 +45,7 @@ function load() {
 		elems[i].addEventListener('blur', endAnim, false);
 		elems[i].style.backgroundColor = "rgb(" + basecolor[0] +"," + basecolor[1] + "," + basecolor[2] + ")";
 	}
+	elems[elems.length-1].addEventListener('blur', write, false);
 }
 
 window.addEventListener('load', load, false);
