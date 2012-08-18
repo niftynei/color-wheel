@@ -12,4 +12,11 @@ Note, this increments upward.  If your base values start at 255, they'll stay at
 3. Define a cycle. `colors.setCycle(['R', 'G', 'R', 'B'])`
 4. Cycle through the defined cycle. `colors.cycle()`
 
+### Examples
+
+Using a step function: http://knapsenterprises.com/colorwheel/waves.html
+
+Using a cycle function: http://knapsenterprises.com/colorwheel/scroll.html
+
+
 Note: Not cross browser tested.
