@@ -75,7 +75,7 @@ Generate the next color value using the current color in the color cycle.  The c
 
 #### toggleStep()
 
-Changes the direction of the step for the current color direction.  Note: using this with cycle() may produce unintended effects.
+Changes the direction of the step for the current color direction.
 
 #### nextInCycle()
 
