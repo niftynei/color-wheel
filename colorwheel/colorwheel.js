@@ -191,8 +191,11 @@ var colorWheel = function(basecolors, delt, increment) {
 			this.slideB(spinner_b.nextLoop());
 		},
 		getCurrentSpinnerDirection : function () {
+			return this.getSpinnerDirection(cycleDef[cycleCount]);
+		},
+		getSpinnerDirection : function (color) {
 			var direction;
-			switch (cycleDef[cycleCount]) {
+			switch (color) {
 				case 'R': direction = spinner_r.getSpinnerDirection(); break;
 				case 'G': direction = spinner_g.getSpinnerDirection(); break;
 				case 'B': direction = spinner_b.getSpinnerDirection(); break;
