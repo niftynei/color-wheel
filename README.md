@@ -20,4 +20,3 @@ Using a cycle function: http://knapsenterprises.com/colorwheel/scroll.html
 
 Using the transition function: http://knapsenterprises.com/colorwheel/blur.html
 
-Note: Not cross browser tested.
