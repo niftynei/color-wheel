@@ -7,7 +7,6 @@ var colorWheel = function(basecolors, delt, increment) {
 	var delta_b = delt || 10;
 	var inc = increment || 10;
 	var cycleDef = ['G', 'R', 'B', 'R'];
-//	var cycleDef = ['B'];
 	var cycleCount = 0;
 	var stepFinished = false;
 
@@ -182,6 +181,9 @@ var colorWheel = function(basecolors, delt, increment) {
 				case 'G': spinner_g.toggleSpinner(); break;
 				case 'B': spinner_b.toggleSpinner(); break;
 			}
+		},
+		nextInCycle : function () {
+			cycleCount = (cycleCount + 1) % cycleDef.length;
 		},
 		cycleConcurrent: function () {
 			this.slideR(spinner_r.nextLoop());
