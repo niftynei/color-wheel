@@ -58,7 +58,6 @@ var colorWheel = function(basecolors, delt, increment) {
 			reset : function () {
 				finished = !finished;
 				counter = 1;
-				console.log(counter + " " + finished);
 			},
 			toggleDirection : function () {
 				up = up * -1;
