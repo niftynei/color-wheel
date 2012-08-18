@@ -10,6 +10,7 @@ var colorWheel = function(basecolors, delt, increment) {
 	var cycleCount = 0;
 	var stepFinished = false;
 
+
 	var BASECOLOR = [BASECOLOR_R, BASECOLOR_G, BASECOLOR_B];
 
 	var setR = function(r) {
@@ -35,11 +36,11 @@ var colorWheel = function(basecolors, delt, increment) {
 		return BASECOLOR;
 	};
 	var slide_g = function (amount) {
-		BASECOLOR[1] = bounded(BASECOLOR_G + Math.floor(delta_g * inc));
+		BASECOLOR[1] = bounded(BASECOLOR_G + Math.floor(delta_g * amount));
 		return BASECOLOR;
 	};
 	var slide_b = function (amount) {
-		BASECOLOR[2] = bounded(BASECOLOR_B + Math.floor(delta_b * inc));
+		BASECOLOR[2] = bounded(BASECOLOR_B + Math.floor(delta_b * amount));
 		return BASECOLOR;
 	};
 	var spin = function(inc) {
@@ -123,10 +124,13 @@ var colorWheel = function(basecolors, delt, increment) {
 			}
 		}
 	};
+	var spinner_r = slider(inc);
+	var spinner_g = slider(inc);
+	var spinner_b = slider(inc);
 	var setSpinners = function (inc) {
-		var spinner_r = slider(inc);
-		var spinner_g = slider(inc);
-		var spinner_b = slider(inc);
+		spinner_r = slider(inc);
+		spinner_g = slider(inc);
+		spinner_b = slider(inc);
 	};
 	var setDeltas = function (startColor, endColor) {
 		delta_r = endColor[0] - startColor[0];
@@ -206,13 +210,15 @@ var colorWheel = function(basecolors, delt, increment) {
 			slide_g(spinner_g.nextLoop());
 			slide_b(spinner_b.nextLoop());
 		},
-		transform : function (startcolor, endcolor, increment) {
+		stepConcurrent: function () {
+			slide_r(spinner_r.nextStep());
+			slide_g(spinner_g.nextStep());
+			slide_b(spinner_b.nextStep());
+		},
+		setTransform : function (startcolor, endcolor, increment) {
 			setSpinners(increment);
 			this.setBase(startcolor);
-			setDeltas(startvalue, nextvalue);
-			for (var i = 0; i < increment; i++){
-				this.cycleConcurrent();
-			}
+			setDeltas(startcolor, endcolor);
 		},
 		getCurrentSpinnerDirection : function () {
 			return this.getSpinnerDirection(cycleDef[cycleCount]);
